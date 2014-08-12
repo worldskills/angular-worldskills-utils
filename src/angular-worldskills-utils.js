@@ -92,7 +92,7 @@
             var auth = {};
             auth.accessToken = accessToken;
             auth.loggedIn = !!auth.accessToken;
-            auth.loginUrl = AUTHORIZE_URL + '?response_type=token&state=' + encodeURIComponent(oauthState) + '&client_id=' + encodeURIComponent(CLIENT_ID) + '&redirect_uri=' + encodeURIComponent(appUrl);
+            auth.loginUrl = WORLDSKILLS_AUTHORIZE_URL + '?response_type=token&state=' + encodeURIComponent(oauthState) + '&client_id=' + encodeURIComponent(WORLDSKILLS_CLIENT_ID) + '&redirect_uri=' + encodeURIComponent(appUrl);
 
             auth.logout = function () {
 
@@ -107,7 +107,7 @@
                 sessionStorage.removeItem('oauth_state');
 
                 // destroy session
-                $http({method: 'POST', url: API_AUTH + '/sessions/logout'})
+                $http({method: 'POST', url: WORLDSKILLS_API_AUTH + '/sessions/logout'})
                     .success(reloadPage)
                     .error(reloadPage);
             };
@@ -117,7 +117,7 @@
                 $http.defaults.headers.common.Authorization = 'Bearer ' + auth.accessToken;
             }
 
-            var user = $http({method: 'GET', url: API_AUTH + '/users/loggedIn'})
+            var user = $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
                 .success(function(data, status, headers, config) {
                     auth.user = data;
                 }).
