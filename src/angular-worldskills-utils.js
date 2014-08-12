@@ -1,7 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('worldskills.utils').provider('auth', function () {
+    var utils = angular.module('worldskills.utils', []);
+
+    utils.provider('auth', function () {
 
         /**
          * Copied from angular.js
