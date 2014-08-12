@@ -138,6 +138,25 @@
                         document.location.href = auth.loginUrl;
                     });
                 }
+                if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {
+
+                    //check for roles
+                    user.success(function(data, status, headers, config) {
+
+                        var hasRole = false;
+                        angular.forEach(toState.data.requiredRoles, function (requiredRole) {
+                            angular.forEach(data.roles, function (role) {
+                                if (role.role_application.application_code == requiredRole.code && role.name == requiredRole.role) {
+                                    hasRole = true;
+                                }
+                            });
+                        });
+                        if (!hasRole){
+                            alert("You do not have the required role to access this view. Redirecting to login page.");
+                            document.location.href = auth.loginUrl;
+                        }
+                    });
+                }
             });
 
             return auth;
