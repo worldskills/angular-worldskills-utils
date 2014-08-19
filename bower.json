@@ -1,6 +1,6 @@
 {
   "name": "angular-worldskills-utils",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "homepage": "https://github.com/worldskills/angular-worldskills-utils",
   "main": "src/angular-worldskills-utils.js",
   "license": "MIT",
