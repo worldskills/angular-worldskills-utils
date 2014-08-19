@@ -3,6 +3,20 @@
 
     var utils = angular.module('worldskills.utils', []);
 
+    utils.service('WorldSkills', function($resource) {
+        return {
+            getLink: function(links, rel) {
+                var href;
+                angular.forEach(links, function(link) {
+                    if (link.rel == rel) {
+                        href = link.href;
+                    }
+                });
+                return href;
+            }
+        };
+    });
+
     utils.provider('auth', function () {
 
         /**
