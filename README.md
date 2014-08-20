@@ -30,7 +30,7 @@ angular.module('yourApp').constant('WORLDSKILLS_API_AUTH', 'https://api.worldski
 angular.module('yourApp').constant('WORLDSKILLS_AUTHORIZE_URL', 'https://auth.worldskills.org/oauth/authorize');
 ```
 
-## Return to state
+### Return to state
 
 To load the previous state after the user has logged in on WorldSkills Auth, you can use `sessionStorage.getItem('redirect_to_state')`.
 Configure the `$urlRouterProvider` as following:
@@ -56,4 +56,35 @@ angular.module('yourApp').config(function($$urlRouterProvider) {
         }
     });
 });
+```
+
+### Require authenticated user
+
+To require an authenticated user for certain states, add `requireLoggedIn: true` in the state data:
+
+```
+.state('your.state', {
+    url: '/your/url',
+    templateUrl: 'views/template.html',
+    controller: 'YourCtrl',
+    data: {
+        requireLoggedIn: true
+    }
+})
+```
+
+You can also require specific roles for a state with `requiredRoles`:
+
+```
+.state('your.state', {
+    url: '/your/url',
+    templateUrl: 'views/template.html',
+    controller: 'YourCtrl',
+    data: {
+        requireLoggedIn: true,
+        requiredRoles: [
+            {code: 100, role: 'Admin'}
+        ]
+    }
+})
 ```
