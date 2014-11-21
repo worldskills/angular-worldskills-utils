@@ -106,9 +106,9 @@ Add `forbiddenFallbad: function` to `app.js`
     //   console.log(auth);
     //   alert("CUSTOM FUNCTION");
     // }
-    forbiddenCallback: function(auth, state){
+    forbiddenCallback: function(auth, $state){
       //state passed from $rootScope.$state
-      state.go('person.view', {'pid': auth.user.person_id});          
+      $state.go('person.view', {'pid': auth.user.person_id});          
     },
     requiredRoles: [
       {code: 600, role: APP_ROLES.ADMIN},
