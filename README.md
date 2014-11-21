@@ -88,3 +88,32 @@ You can also require specific roles for a state with `requiredRoles`:
     }
 })
 ```
+
+
+### Custom fallbacks for forbidden state
+
+Custom fallback in order to handle forbidden redirect manually rather than to redirect to login url automatically.
+Add `forbiddenFallbad: function` to `app.js`
+
+```javascript
+.state('people', {
+  url: '/people?search',
+  templateUrl: 'views/people.html',
+  controller: 'PersonnelCtrl',
+  data:{
+    requireLoggedIn: true,        
+    // requiredRoles: function(auth){
+    //   console.log(auth);
+    //   alert("CUSTOM FUNCTION");
+    // }
+    forbiddenCallback: function(auth, state){
+      //state passed from $rootScope.$state
+      state.go('person.view', {'pid': auth.user.person_id});          
+    },
+    requiredRoles: [
+      {code: 600, role: APP_ROLES.ADMIN},
+      {code: 600, role: APP_ROLES.MANAGER}
+    ]
+  }
+})
+```
