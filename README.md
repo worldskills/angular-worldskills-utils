@@ -102,10 +102,6 @@ Add `forbiddenFallbad: function` to `app.js`
   controller: 'PersonnelCtrl',
   data:{
     requireLoggedIn: true,        
-    // requiredRoles: function(auth){
-    //   console.log(auth);
-    //   alert("CUSTOM FUNCTION");
-    // }
     forbiddenCallback: function(auth, $state){
       //state passed from $rootScope.$state
       $state.go('person.view', {'pid': auth.user.person_id});          
