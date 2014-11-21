@@ -154,7 +154,7 @@
                         document.location.href = auth.loginUrl;
                     });
                 }
-                if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {
+                if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {                    
 
                     //check for roles
                     user.success(function(data, status, headers, config) {
@@ -168,8 +168,13 @@
                             });
                         });
                         if (!hasRole){
-                            alert("You do not have the required role to access this view. Redirecting to login page.");
-                            document.location.href = auth.loginUrl;
+                            if(typeof toState.data.forbiddenCallback == 'function'){
+                                toState.data.forbiddenCallback(auth, $rootScope.$state);
+                            }
+                            else{
+                                alert("You do not have the required role to access this view. Redirecting to login page.");
+                                document.location.href = auth.loginUrl;
+                            }
                         }
                     });
                 }
