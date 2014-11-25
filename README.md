@@ -117,10 +117,10 @@ Add `forbiddenFallbad: function` to `app.js`
 ### Spinner directive
 
 Show an animated loading indicator graphic.
-Spinner is visible whenever `$scope.loading = true`
+
 
 ```html
-<ws-spinner></ws-spinner>
+<ws-spinner ng=show="loading"></ws-spinner>
 ```
 
 ### TextSpinner directive
