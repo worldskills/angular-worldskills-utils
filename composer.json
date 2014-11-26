@@ -1,0 +1,21 @@
+{
+	"name" : "worldskills/angular-worldskills-utils",
+	"type" : "component",
+	"license" : "MIT",
+	"require" : {
+		"robloach/component-installer" : "*",
+	},
+	"extra" : {
+		"component" : {
+			"scripts" : [
+				"src/angular-worldskills-utils.js"
+			],
+			"files" : [
+				"images/*"
+			],
+			"styles" : [
+				"src/spinner.css"
+			]
+		}
+	}
+}
