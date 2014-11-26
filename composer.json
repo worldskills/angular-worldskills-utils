@@ -3,7 +3,7 @@
 	"type" : "component",
 	"license" : "MIT",
 	"require" : {
-		"robloach/component-installer" : "*",
+		"robloach/component-installer" : "*"
 	},
 	"extra" : {
 		"component" : {
