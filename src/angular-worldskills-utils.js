@@ -54,7 +54,7 @@
                 var val = angular.isDefined(key_value[1]) ? tryDecodeURIComponent(key_value[1]) : true;
                 if (!obj[key]) {
                   obj[key] = val;
-                } else if(isArray(obj[key])) {
+                } else if(angular.isArray(obj[key])) {
                   obj[key].push(val);
                 } else {
                   obj[key] = [obj[key],val];
