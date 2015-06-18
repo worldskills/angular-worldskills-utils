@@ -36,7 +36,7 @@ To load the previous state after the user has logged in on WorldSkills Auth, you
 Configure the `$urlRouterProvider` as following:
 
 ```javascript
-angular.module('yourApp').config(function($$urlRouterProvider) {
+angular.module('yourApp').config(function($urlRouterProvider) {
     $urlRouterProvider.otherwise(function ($injector, $location) {
         // check for existing redirect
         var $state = $injector.get('$state');
