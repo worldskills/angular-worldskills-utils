@@ -30,6 +30,17 @@ angular.module('yourApp').constant('WORLDSKILLS_API_AUTH', 'https://api.worldski
 angular.module('yourApp').constant('WORLDSKILLS_AUTHORIZE_URL', 'https://auth.worldskills.org/oauth/authorize');
 ```
 
+### Authentication
+
+To use any of the following authentication functions, make sure to use the `auth` object in at least one controller, e.g.:
+
+```javascript
+angular.module('yourApp').controller('ContainerCtrl', function($scope, auth) {
+    $scope.auth = auth;
+});
+
+```
+
 ### Return to state
 
 To load the previous state after the user has logged in on WorldSkills Auth, you can use `sessionStorage.getItem('redirect_to_state')`.
