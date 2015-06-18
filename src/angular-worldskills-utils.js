@@ -3,7 +3,7 @@
 
     var utils = angular.module('worldskills.utils', []);
 
-    utils.service('WorldSkills', function($resource) {
+    utils.service('WorldSkills', function() {
         return {
             getLink: function(links, rel) {
                 var href;
@@ -99,7 +99,7 @@
             }
         }
 
-        this.$get = ['$rootScope', '$http', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
+        this.$get = ['$rootScope', '$http', '$resource', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, $resource, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
 
             var appUrl = window.location.href.replace(window.location.hash, '');
 
@@ -131,20 +131,19 @@
                 $http.defaults.headers.common.Authorization = 'Bearer ' + auth.accessToken;
             }
 
-            var user = $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
-                .success(function(data, status, headers, config) {
-                    auth.user = data;
-                }).
-                error(function(data, status, headers, config) {
-                    // error getting current user, clear access token
-                    sessionStorage.removeItem('access_token');
-                    auth.accessToken = null;
-                    auth.loggedIn = false;
-                });
+            var User = $resource(WORLDSKILLS_API_AUTH + '/users/loggedIn');
+            auth.user = User.get(function() {
+                // success
+            }, function() {
+                // error getting current user, clear access token
+                sessionStorage.removeItem('access_token');
+                auth.accessToken = null;
+                auth.loggedIn = false;
+            });
 
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 if (typeof toState.data != 'undefined' && !!toState.data.requireLoggedIn) {
-                    user.error(function () {
+                    auth.user.$promise.then(function () {}, function () {
 
                         // error loading loggedIn user, store state
                         sessionStorage.setItem('redirect_to_state', toState.name);
@@ -157,7 +156,7 @@
                 if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {                    
 
                     //check for roles
-                    user.success(function(data, status, headers, config) {
+                    auth.user.$promise.then(function(data, status, headers, config) {
 
                         var hasRole = false;
                         angular.forEach(toState.data.requiredRoles, function (requiredRole) {
