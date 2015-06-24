@@ -145,12 +145,18 @@
                 if (typeof toState.data != 'undefined' && !!toState.data.requireLoggedIn) {
                     auth.user.$promise.then(function () {}, function () {
 
-                        // error loading loggedIn user, store state
-                        sessionStorage.setItem('redirect_to_state', toState.name);
-                        sessionStorage.setItem('redirect_to_params', angular.toJson(toParams));
+                        //check if custom callback function exists
+                        if(typeof toState.data.forbiddenCallback == 'function'){
+                            toState.data.forbiddenCallback(auth, $rootScope.$state);                            
+                        }
+                        else{
+                            // error loading loggedIn user, store state
+                            sessionStorage.setItem('redirect_to_state', toState.name);
+                            sessionStorage.setItem('redirect_to_params', angular.toJson(toParams));
 
-                        // redirect to login
-                        document.location.href = auth.loginUrl;
+                            // redirect to login
+                            document.location.href = auth.loginUrl;
+                        }
                     });
                 }
                 if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {                    

@@ -125,6 +125,36 @@ Add `forbiddenFallbad: function` to `app.js`
 })
 ```
 
+Also now allows custom fallbacks for login error state, use case: redirect to a signup page instead of auth.loginUrl
+
+```javascript
+   .state('restrictedState', {
+     url: '/needsLogin',
+     templateUrl: 'views/restricted.html',
+     controller: 'RestrictedCtrl',     
+     data: {
+      requireLoggedIn: true,
+      forbiddenCallback: function(auth, $state){
+        $state.go('signup');
+      },
+       requiredRoles: [
+         {code: 1800, role: APP_ROLES.ADMIN},
+         {code: 1800, role: APP_ROLES.MANAGER},
+         {code: 1800, role: APP_ROLES.USER}
+       ]
+     }
+   })
+
+   .state('signup', {
+    url: '/signup',
+    controller: 'SignupCtrl',
+    templateUrl: 'views/signup.html',
+    data: {
+      requireLoggedIn: false
+    }
+   })
+```
+
 ### Spinner directive
 
 Show an animated loading indicator graphic.
