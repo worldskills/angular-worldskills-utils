@@ -11,6 +11,8 @@
     margin: 100px auto;
 }
 
+.smallSpinner .spinner { margin: 0 auto; height: 15px; }
+
 .spinner > div {
   background-color: #62b5e5;
   height: 100%;

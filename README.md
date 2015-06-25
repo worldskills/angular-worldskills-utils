@@ -175,3 +175,11 @@ Show a loading indicator on a button.
 </button>
 ```
 
+## Spinner sizes
+
+Added small and big versions
+
+```html
+<ws-spinner class='bigSpinner'></ws-spinner>
+<ws-spinner class='smallSpinner'></ws-spinner>
+```
