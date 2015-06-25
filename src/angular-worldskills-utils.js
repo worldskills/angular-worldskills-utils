@@ -3,7 +3,7 @@
 
     var utils = angular.module('worldskills.utils', []);
 
-    utils.service('WorldSkills', function($resource) {
+    utils.service('WorldSkills', function() {
         return {
             getLink: function(links, rel) {
                 var href;
@@ -133,6 +133,7 @@
 
             var user = $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
                 .success(function(data, status, headers, config) {
+                    data.$promise = user;
                     auth.user = data;
                 }).
                 error(function(data, status, headers, config) {
@@ -142,13 +143,16 @@
                     auth.loggedIn = false;
                 });
 
+            auth.user = {};
+            auth.user.$promise = user;
+
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 if (typeof toState.data != 'undefined' && !!toState.data.requireLoggedIn) {
                     user.error(function () {
 
                         //check if custom callback function exists
                         if(typeof toState.data.forbiddenCallback == 'function'){
-                            toState.data.forbiddenCallback(auth, $rootScope.$state);                            
+                            toState.data.forbiddenCallback(auth, $rootScope.$state);
                         }
                         else{
                             // error loading loggedIn user, store state
@@ -160,7 +164,7 @@
                         }
                     });
                 }
-                if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {                    
+                if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {
 
                     //check for roles
                     user.success(function(data, status, headers, config) {
@@ -193,7 +197,7 @@
     utils.directive('wsSpinner', function () {
         return {
           template: '<div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>',
-          restrict: 'E'      
+          restrict: 'E'
         };
     });
 
