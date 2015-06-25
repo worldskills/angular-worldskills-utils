@@ -3,7 +3,7 @@
 
     var utils = angular.module('worldskills.utils', []);
 
-    utils.service('WorldSkills', function() {
+    utils.service('WorldSkills', function($resource) {
         return {
             getLink: function(links, rel) {
                 var href;
@@ -99,7 +99,7 @@
             }
         }
 
-        this.$get = ['$rootScope', '$http', '$resource', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, $resource, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
+        this.$get = ['$rootScope', '$http', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
 
             var appUrl = window.location.href.replace(window.location.hash, '');
 
@@ -131,19 +131,20 @@
                 $http.defaults.headers.common.Authorization = 'Bearer ' + auth.accessToken;
             }
 
-            var User = $resource(WORLDSKILLS_API_AUTH + '/users/loggedIn');
-            auth.user = User.get(function() {
-                // success
-            }, function() {
-                // error getting current user, clear access token
-                sessionStorage.removeItem('access_token');
-                auth.accessToken = null;
-                auth.loggedIn = false;
-            });
+            var user = $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
+                .success(function(data, status, headers, config) {
+                    auth.user = data;
+                }).
+                error(function(data, status, headers, config) {
+                    // error getting current user, clear access token
+                    sessionStorage.removeItem('access_token');
+                    auth.accessToken = null;
+                    auth.loggedIn = false;
+                });
 
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 if (typeof toState.data != 'undefined' && !!toState.data.requireLoggedIn) {
-                    auth.user.$promise.then(function () {}, function () {
+                    user.error(function () {
 
                         //check if custom callback function exists
                         if(typeof toState.data.forbiddenCallback == 'function'){
@@ -162,7 +163,7 @@
                 if (typeof toState.data != 'undefined' && !!toState.data.requiredRoles && toState.data.requiredRoles.length > 0) {                    
 
                     //check for roles
-                    auth.user.$promise.then(function(data, status, headers, config) {
+                    user.success(function(data, status, headers, config) {
 
                         var hasRole = false;
                         angular.forEach(toState.data.requiredRoles, function (requiredRole) {
