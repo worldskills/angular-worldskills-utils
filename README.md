@@ -134,7 +134,7 @@ Also now allows custom fallbacks for login error state, use case: redirect to a 
      controller: 'RestrictedCtrl',     
      data: {
       requireLoggedIn: true,
-      forbiddenCallback: function(auth, $state){
+      unAuthenticatedCallback: function(auth, $state){
         $state.go('signup');
       },
        requiredRoles: [

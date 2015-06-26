@@ -151,8 +151,8 @@
                     user.error(function () {
 
                         //check if custom callback function exists
-                        if(typeof toState.data.forbiddenCallback == 'function'){
-                            toState.data.forbiddenCallback(auth, $rootScope.$state);
+                        if(typeof toState.data.unAuthenticatedCallback == 'function'){
+                            toState.data.unAuthenticatedCallback(auth, $rootScope.$state);
                         }
                         else{
                             // error loading loggedIn user, store state
