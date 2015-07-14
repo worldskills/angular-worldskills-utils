@@ -109,7 +109,7 @@
             auth.loginUrl = WORLDSKILLS_AUTHORIZE_URL + '?response_type=token&state=' + encodeURIComponent(oauthState) + '&client_id=' + encodeURIComponent(WORLDSKILLS_CLIENT_ID) + '&redirect_uri=' + encodeURIComponent(appUrl);
 
             auth.refreshRoles = function(){                
-                user = auth.getUser();
+                var user = auth.getUser();
                 auth.user = {};
                 auth.user.$promise = user;
                 return auth.user.$promise;                        
