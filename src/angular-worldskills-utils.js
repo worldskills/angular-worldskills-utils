@@ -108,6 +108,27 @@
             auth.loggedIn = !!auth.accessToken;
             auth.loginUrl = WORLDSKILLS_AUTHORIZE_URL + '?response_type=token&state=' + encodeURIComponent(oauthState) + '&client_id=' + encodeURIComponent(WORLDSKILLS_CLIENT_ID) + '&redirect_uri=' + encodeURIComponent(appUrl);
 
+            auth.refreshRoles = function(){                
+                user = auth.getUser();
+                auth.user = {};
+                auth.user.$promise = user;
+                return auth.user.$promise;                        
+            };
+
+            auth.getUser = function(){
+                return $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
+                    .success(function(data, status, headers, config) {
+                        data.$promise = user;
+                        auth.user = data;
+                    }).
+                    error(function(data, status, headers, config) {
+                        // error getting current user, clear access token
+                        sessionStorage.removeItem('access_token');
+                        auth.accessToken = null;
+                        auth.loggedIn = false;
+                    });
+            };
+
             auth.logout = function () {
 
                 var reloadPage = function () {
@@ -131,17 +152,7 @@
                 $http.defaults.headers.common.Authorization = 'Bearer ' + auth.accessToken;
             }
 
-            var user = $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
-                .success(function(data, status, headers, config) {
-                    data.$promise = user;
-                    auth.user = data;
-                }).
-                error(function(data, status, headers, config) {
-                    // error getting current user, clear access token
-                    sessionStorage.removeItem('access_token');
-                    auth.accessToken = null;
-                    auth.loggedIn = false;
-                });
+            var user = auth.getUser();
 
             auth.user = {};
             auth.user.$promise = user;
