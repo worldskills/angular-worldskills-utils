@@ -75,27 +75,36 @@
 
         var params = parseKeyValue(window.location.hash.substr(1));
 
-        var oauthState = sessionStorage.getItem('oauth_state');
-        if (!oauthState) {
-            // generate new OAuth state
-            oauthState = random(32);
-            sessionStorage.setItem('oauth_state', oauthState);
+        try {
+            var oauthState = sessionStorage.getItem('oauth_state');
+            if (!oauthState) {
+                // generate new OAuth state
+                oauthState = random(32);
+                sessionStorage.setItem('oauth_state', oauthState);
+            }
+        } catch (e) {
+            // unable to store OAuth state, don't use it
+            oauthState = null;
         }
 
         // parse access token and state from URL
         var accessToken = params.access_token;
         var state = params.state;
         if (!accessToken) {
-            // try to retrive access token from storage
+            // try to retrieve access token from storage
             accessToken = sessionStorage.getItem('access_token');
         } else {
             // verify state
-            if (state != oauthState) {
+            if (oauthState !== null && state !== oauthState) {
                 // invalid state, clear access token
                 accessToken = null;
             } else {
-                // store access token
-                sessionStorage.setItem('access_token', accessToken);
+                try {
+                    // store access token
+                    sessionStorage.setItem('access_token', accessToken);
+                } catch (e) {
+                    // unable to store access token
+                }
             }
         }
 
@@ -164,11 +173,14 @@
                         //check if custom callback function exists
                         if(typeof toState.data.unAuthenticatedCallback == 'function'){
                             toState.data.unAuthenticatedCallback(auth, $rootScope.$state);
-                        }
-                        else{
-                            // error loading loggedIn user, store state
-                            sessionStorage.setItem('redirect_to_state', toState.name);
-                            sessionStorage.setItem('redirect_to_params', angular.toJson(toParams));
+                        } else {
+                            try {
+                                // error loading loggedIn user, store state
+                                sessionStorage.setItem('redirect_to_state', toState.name);
+                                sessionStorage.setItem('redirect_to_params', angular.toJson(toParams));
+                            } catch (e) {
+                                // unable to store state
+                            }
 
                             // redirect to login
                             document.location.href = auth.loginUrl;
