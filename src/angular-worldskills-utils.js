@@ -108,7 +108,7 @@
             }
         }
 
-        this.$get = ['$rootScope', '$http', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
+        this.$get = ['$rootScope', '$http', '$q', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, $q, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
 
             var appUrl = window.location.href.replace(window.location.hash, '');
 
@@ -136,6 +136,37 @@
                         auth.accessToken = null;
                         auth.loggedIn = false;
                     });
+            };
+
+            auth.hasUserRole = function (applicationCode, roles, entityId) {
+
+                var deferred = $q.defer();
+
+                if (typeof roles == 'string') {
+                    roles = [roles];
+                }
+
+                auth.user.$promise.then(function () {
+
+                    var hasUserRole = false;
+
+                    angular.forEach(roles, function (role) {
+
+                        angular.forEach(auth.user.roles, function (r) {
+
+                            if (r.role_application.application_code == applicationCode && r.name == role) {
+
+                                if (!r.apply_per_entity || r.ws_entity.id == entityId) {
+                                    hasUserRole = true;
+                                }
+                            }
+                        });
+                    });
+
+                    deferred.resolve(hasUserRole);
+                });
+
+                return deferred.promise;
             };
 
             auth.logout = function () {
