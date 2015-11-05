@@ -28,6 +28,7 @@ Define the following constants (don't forget to replace your client id):
 angular.module('yourApp').constant('WORLDSKILLS_CLIENT_ID', '<your client id>');
 angular.module('yourApp').constant('WORLDSKILLS_API_AUTH', 'https://api.worldskills.org/auth');
 angular.module('yourApp').constant('WORLDSKILLS_AUTHORIZE_URL', 'https://auth.worldskills.org/oauth/authorize');
+angular.module('yourApp').constant('LOAD_CHILD_ENTITY_ROLES', false);
 ```
 
 ### Authentication

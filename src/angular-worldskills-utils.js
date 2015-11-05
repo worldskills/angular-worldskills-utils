@@ -108,7 +108,7 @@
             }
         }
 
-        this.$get = ['$rootScope', '$http', '$q', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', function($rootScope, $http, $q, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH) {
+        this.$get = ['$rootScope', '$http', '$q', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', 'LOAD_CHILD_ENTITY_ROLES', function($rootScope, $http, $q, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH, LOAD_CHILD_ENTITY_ROLES) {
 
             var appUrl = window.location.href.replace(window.location.hash, '');
 
@@ -125,7 +125,8 @@
             };
 
             auth.getUser = function(){
-                return $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/loggedIn'})
+            	var userResource = LOAD_CHILD_ENTITY_ROLES ? 'logged_in_inherited_roles' : 'loggedIn';
+                return $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/users/' + userResource})
                     .success(function(data, status, headers, config) {
                         data.$promise = user;
                         auth.user = data;
