@@ -9,7 +9,7 @@
 		"component" : {
 			"scripts" : [
 				"src/angular-worldskills-utils.js",
-				"src/downloader.js",
+				"src/downloader.js"
 			],
 			"files" : [
 				"images/*"
