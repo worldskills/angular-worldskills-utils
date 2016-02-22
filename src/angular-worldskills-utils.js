@@ -280,5 +280,24 @@
             }
         };
     });
+    
+    utils.directive('wsPuppet', function (auth) {
+  	  function link(scope, element, attrs) {
+  	      scope.$watch(attrs.p, function(val) {
+  	        if (val) {
+  	          element.show();
+  	        }
+  	        else {
+  	          element.hide();
+  	        }
+  			  });
+  		  }
+
+  		  return {
+  	      restrict: 'E',
+  	      template: '<div class="puppet-banner">{{auth.user.puppeteer.first_name}} {{auth.user.puppeteer.last_name}} logged in as {{auth.user.first_name}} {{auth.user.last_name}}</div>',
+  	      link: link,
+  			};
+  	  });
 
 })();

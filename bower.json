@@ -1,7 +1,7 @@
 {
   "name": "angular-worldskills-utils",
   "homepage": "https://github.com/worldskills/angular-worldskills-utils",
-  "main": ["src/angular-worldskills-utils.js", "src/spinner.css"],
+  "main": ["src/angular-worldskills-utils.js", "src/spinner.css", "src/angular-worldskills-utils.css"],
   "license": "MIT",
   "ignore": [
     "**/.*",

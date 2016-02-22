@@ -1,0 +1,10 @@
+div.puppet-banner {
+	top: 0;
+    left: 0;
+    background-color: #d24835;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    height: 40px;
+}
