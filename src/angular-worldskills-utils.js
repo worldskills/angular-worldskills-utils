@@ -108,8 +108,8 @@
             }
         }
 
-        this.$get = ['$rootScope', '$http', '$q', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', 'LOAD_CHILD_ENTITY_ROLES', 'FILTER_AUTH_ROLES',
-                     function($rootScope, $http, $q, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH, LOAD_CHILD_ENTITY_ROLES, FILTER_AUTH_ROLES) {
+        this.$get = ['$rootScope', '$http', '$q', '$interval', '$document', 'WORLDSKILLS_CLIENT_ID', 'WORLDSKILLS_AUTHORIZE_URL', 'WORLDSKILLS_API_AUTH', 'LOAD_CHILD_ENTITY_ROLES', 'FILTER_AUTH_ROLES',
+                     function($rootScope, $http, $q, $interval, $document, WORLDSKILLS_CLIENT_ID, WORLDSKILLS_AUTHORIZE_URL, WORLDSKILLS_API_AUTH, LOAD_CHILD_ENTITY_ROLES, FILTER_AUTH_ROLES) {
 
             var appUrl = window.location.href.replace(window.location.hash, '');
 
@@ -248,6 +248,23 @@
                     });
                 }
             });
+
+            // check if user hasn't been idle for 5 min
+            var maxIdleTime = 1000 * 60 * 5;
+            var idleTime = 0;
+            $interval(function () {
+                idleTime += 1000;
+            }, 1000);
+            $document.on('mousemove keypress', function () {
+                idleTime = 0;
+            });
+
+            // ping if not idle  
+            $interval(function () {
+                if (idleTime < maxIdleTime) {
+                    $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/ping'});
+                }
+            }, maxIdleTime);
 
             return auth;
         }];
