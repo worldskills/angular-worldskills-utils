@@ -317,4 +317,73 @@
   			};
   	  });
 
+    utils.component('wsEntitySelect', {
+        template: '<button type="button" class="btn btn-default" ng-click="selectWsEntity()"><span ng-show="selectedEntity">{{selectedEntity.label}}</span><span ng-show="!selectedEntity">Select entity…</span></button>',
+        bindings: {
+            entity: '='
+        },
+        controller: ['$scope', '$http', '$uibModal', 'WORLDSKILLS_API_AUTH', function ($scope, $http, $uibModal, WORLDSKILLS_API_AUTH) {
+
+            var ctrl = this;
+            $scope.entitiesTree = [];
+            $scope.entityFilter = {query: ''};
+            function parseTree(entity) {
+                var node = {label: entity.name.text, children: [], data: entity};
+                angular.forEach(entity.children, function (child) {
+                    var childNode = parseTree(child);
+                    if (childNode !== false) {
+                        node.children.push(childNode);
+                    }
+                });
+                if (node.label.toLowerCase().indexOf($scope.entityFilter.query.toLowerCase()) != -1 || node.children.length > 0) {
+                    if ($scope.entityFilter.query && node.children.length > 0) {
+                        node.expanded = true;
+                    }
+                    return node;
+                } else {
+                    return false;
+                }
+            }
+            function createTree() {
+                $scope.entitiesTree = [];
+                angular.forEach($scope.entities, function (entity) {
+                    var node = parseTree(entity);
+                    if (node !== false) {
+                        $scope.entitiesTree.push(node);
+                    }
+                });
+            }
+            $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/ws_entities?depth=10&limit=100000'}).success(function (data) {
+                $scope.entities = data.ws_entity_list;
+            });
+
+            $scope.selectedEntity = null;
+            $scope.selectEntity = function (entity) {
+                ctrl.entity = entity.data.id;
+                $scope.selectedEntity = entity;
+            };
+            $scope.clearEntity = function () {
+                ctrl.entity = null;
+                $scope.selectedEntity = null;
+                $scope.wsEntityModal.close();
+            };
+            $scope.okEntity = function (entity) {
+                $scope.wsEntityModal.close();
+            };
+            $scope.filterEntityTree = function () {
+                createTree();
+            };
+            $scope.selectWsEntity = function () {
+                createTree();
+                $scope.wsEntityModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Entities</h3></div><div class="modal-body" id="modal-body"><form><div class="form-group"><input type="text" class="form-control" placeholder="Search entity" ng-model="entityFilter.query" ng-change="filterEntityTree()"></div></form><abn-tree tree-data="entitiesTree" icon-leaf="glyphicon glyphicon-triangle-right" expand-level="1" on-select="selectEntity(branch)"></abn-tree></div><div class="modal-footer"><button class="btn btn-danger" type="button" ng-click="clearEntity()">Clear</button><button class="btn btn-primary" type="button" ng-click="okEntity()">OK</button></div>',
+                    size: 'md',
+                    scope: $scope
+                });
+            };
+
+        }]
+
+    });
+
 })();
