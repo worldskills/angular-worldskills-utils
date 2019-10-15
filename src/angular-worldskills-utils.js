@@ -320,11 +320,9 @@
     utils.component('wsEntitySelect', {
         template: '<button type="button" class="btn btn-default" ng-click="selectWsEntity()"><span ng-show="selectedEntity">{{selectedEntity.label}}</span><span ng-show="!selectedEntity">Select entity…</span></button>',
         bindings: {
-            entity: '=',
-            roleApp: '@?',
-            role: '@?'
+            entity: '='
         },
-        controller: ['$scope', '$http', '$httpParamSerializer', '$uibModal', 'WORLDSKILLS_API_AUTH', function ($scope, $http, $httpParamSerializer, $uibModal, WORLDSKILLS_API_AUTH) {
+        controller: ['$scope', '$http', '$uibModal', 'WORLDSKILLS_API_AUTH', function ($scope, $http, $uibModal, WORLDSKILLS_API_AUTH) {
 
             var ctrl = this;
             $scope.entitiesTree = [];
@@ -355,16 +353,7 @@
                     }
                 });
             }
-            var wsEntitiesParams = {};
-            wsEntitiesParams.depth = 10;
-            wsEntitiesParams.limit = 100000;
-            if (ctrl.roleApp) {
-                wsEntitiesParams.roleApp = ctrl.roleApp;
-            }
-            if (ctrl.role) {
-                wsEntitiesParams.role = ctrl.role;
-            }
-            $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/ws_entities?' + $httpParamSerializer(wsEntitiesParams)}).success(function (data) {
+            $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/ws_entities?depth=10&limit=100000'}).success(function (data) {
                 $scope.entities = data.ws_entity_list;
             });
 
