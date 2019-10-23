@@ -321,6 +321,7 @@
         template: '<button type="button" class="btn btn-default" ng-click="selectWsEntity()"><span ng-show="selectedEntity">{{selectedEntity.label}}</span><span ng-show="!selectedEntity">Select entity…</span></button>',
         bindings: {
             entity: '=',
+            onUpdate: '&',
             roleApp: '@?',
             role: '@?'
         },
@@ -377,9 +378,11 @@
                 ctrl.entity = null;
                 $scope.selectedEntity = null;
                 $scope.wsEntityModal.close();
+                ctrl.onUpdate({entity: ctrl.entity});
             };
             $scope.okEntity = function (entity) {
                 $scope.wsEntityModal.close();
+                ctrl.onUpdate({entity: ctrl.entity});
             };
             $scope.filterEntityTree = function () {
                 createTree();
