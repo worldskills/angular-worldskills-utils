@@ -321,6 +321,7 @@
         template: '<button type="button" class="btn btn-default" ng-click="selectWsEntity()"><span ng-show="selectedEntity">{{selectedEntity.label}}</span><span ng-show="!selectedEntity">Select entity…</span></button>',
         bindings: {
             entity: '=',
+            entityName: '=?',
             onUpdate: '&',
             roleApp: '@?',
             role: '@?'
@@ -372,17 +373,19 @@
             $scope.selectedEntity = null;
             $scope.selectEntity = function (entity) {
                 ctrl.entity = entity.data.id;
+                ctrl.entityName = entity.data.name.text;
                 $scope.selectedEntity = entity;
             };
             $scope.clearEntity = function () {
                 ctrl.entity = null;
+                ctrl.entityName = null;
                 $scope.selectedEntity = null;
                 $scope.wsEntityModal.close();
-                ctrl.onUpdate({entity: ctrl.entity});
+                ctrl.onUpdate({entity: ctrl.entity, entityName: ctrl.entityName});
             };
             $scope.okEntity = function (entity) {
                 $scope.wsEntityModal.close();
-                ctrl.onUpdate({entity: ctrl.entity});
+                ctrl.onUpdate({entity: ctrl.entity, entityName: ctrl.entityName});
             };
             $scope.filterEntityTree = function () {
                 createTree();
