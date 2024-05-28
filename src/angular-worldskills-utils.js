@@ -126,7 +126,7 @@
             };
 
             auth.getUser = function(){
-            	var queryParam = '?show_collapsed_child_roles=' + LOAD_CHILD_ENTITY_ROLES;
+            	var queryParam = '?show_child_roles=false&show_collapsed_child_roles=' + LOAD_CHILD_ENTITY_ROLES;
             	angular.forEach(FILTER_AUTH_ROLES, function(appCode){
             		queryParam += '&app_code=' + appCode;
             	});
