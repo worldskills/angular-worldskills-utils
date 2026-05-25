@@ -143,6 +143,22 @@
                     });
             };
 
+            var unauthenticatedUserPromise = function () {
+               var deferred = $q.defer();
+               var promise = deferred.promise;
+
+               promise.success = function () {
+                 return promise;
+               };
+               promise.error = function (callback) {
+                 promise.then(null, callback);
+                 return promise;
+               };
+
+               deferred.reject();
+               return promise;
+            };
+
             auth.hasUserRole = function (applicationCode, roles, entityId) {
 
                 var deferred = $q.defer();
@@ -169,6 +185,8 @@
                     });
 
                     deferred.resolve(hasUserRole);
+                }, function () {
+                  deferred.resolve(false);
                 });
 
                 return deferred.promise;
@@ -197,7 +215,7 @@
                 $http.defaults.headers.common.Authorization = 'Bearer ' + auth.accessToken;
             }
 
-            var user = auth.getUser();
+            var user = auth.loggedIn ? auth.getUser() : unauthenticatedUserPromise();
 
             auth.user = {};
             auth.user.$promise = user;
@@ -261,7 +279,7 @@
 
             // ping if not idle  
             $interval(function () {
-                if (idleTime < maxIdleTime) {
+                if (auth.loggedIn && idleTime < maxIdleTime) {
                     $http({method: 'GET', url: WORLDSKILLS_API_AUTH + '/ping'});
                 }
             }, maxIdleTime);
